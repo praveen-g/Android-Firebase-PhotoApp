@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "732438946917",
+    "firebase_url": "https://lab4-d491d.firebaseio.com",
+    "project_id": "lab4-d491d",
+    "storage_bucket": "lab4-d491d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:732438946917:android:1c3fb3f03da579c7",
+        "android_client_info": {
+          "package_name": "com.example.praveen.lab4"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "732438946917-7taftcjevuru15m5kbd16p44o1rm5s58.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDsku5z0GCeXzX3rbRpNqeDELfwvwcTY28"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
