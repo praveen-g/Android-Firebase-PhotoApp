@@ -496,13 +496,8 @@ public class LoginActivity extends AppCompatActivity implements
 
     //transition to upload page
     private void goToUploadActivity() {
-        if (mAuth.getCurrentUser()!= null){
-            Intent intent = new Intent(this, UploadActivity.class);
-            startActivity(intent);
-        }else{
-            //TODO send to photo viewing activity
-        }
-
+        Intent intent = new Intent(this, UploadActivity.class);
+        startActivity(intent);
     }
 
 

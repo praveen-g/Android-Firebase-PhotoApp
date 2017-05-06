@@ -17,7 +17,6 @@
             android:layout_width="266dp"
             android:layout_height="49dp"
             android:layout_marginTop="39dp"
-
             android:text="Choose Photo"
             tools:layout_editor_absoluteX="59dp"
             tools:layout_editor_absoluteY="390dp"

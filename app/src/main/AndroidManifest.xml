@@ -25,11 +25,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".UploadActivity"
             android:parentActivityName=".LoginActivity">
-
+        </activity>
+        <activity
+            android:name=".PhotoViewerActivity"
+            android:parentActivityName=".UploadActivity">
         </activity>
     </application>
 
