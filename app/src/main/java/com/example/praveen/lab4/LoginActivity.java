@@ -92,6 +92,9 @@ public class LoginActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        mAuth = FirebaseAuth.getInstance();
+
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
@@ -150,12 +153,12 @@ public class LoginActivity extends AppCompatActivity implements
         findViewById(R.id.notnow_button).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                mAuth.signOut();
+                if(mAuth.getCurrentUser()!=null){
+                    mAuth.signOut();
+                }
                 goToUploadActivity();
             }
         });
-
-        mAuth = FirebaseAuth.getInstance();
     }
 
     private void populateAutoComplete() {
@@ -436,7 +439,7 @@ public class LoginActivity extends AppCompatActivity implements
             GoogleSignInAccount acct = result.getSignInAccount();
             firebaseAuthWithGoogle(acct);
         } else {
-            // Signed out, show unauthenticated UI.
+            goToUploadActivity();
         }
     }
 
@@ -496,7 +499,12 @@ public class LoginActivity extends AppCompatActivity implements
 
     //transition to upload page
     private void goToUploadActivity() {
-        Intent intent = new Intent(this, UploadActivity.class);
+        Intent intent;
+        if(mAuth.getCurrentUser()!=null){
+            intent = new Intent(this, UploadActivity.class);
+        }else{
+            intent = new Intent(this, PhotoViewerActivity.class);
+        }
         startActivity(intent);
     }
 

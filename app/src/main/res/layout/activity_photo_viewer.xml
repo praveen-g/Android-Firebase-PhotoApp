@@ -12,15 +12,24 @@
         tools:layout_editor_absoluteY="8dp"
         tools:layout_editor_absoluteX="8dp">
 
-
         <EditText
+            android:id="@+id/searchText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Search"
+            android:inputType="textPersonName"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true" />
+
+        <TextView
             android:id="@+id/publicTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="textPersonName"
             android:text="Public"
-            android:layout_alignParentTop="true"
+
+            android:layout_below="@+id/searchText"
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true" />
 
@@ -28,15 +37,15 @@
             android:id="@+id/publicGridView"
             android:layout_width="wrap_content"
             android:layout_height="200dp"
-            android:layout_below="@+id/publicTextView"
-            android:layout_alignParentStart="true" />
+            android:layout_below="@+id/searchText"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="15dp" />
 
-        <EditText
+        <TextView
             android:id="@+id/privateTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="textPersonName"
             android:text="Private"
             android:layout_below="@+id/publicGridView"
             android:layout_alignParentEnd="true"
@@ -51,5 +60,6 @@
 
 
     </RelativeLayout>
+
 </android.support.constraint.ConstraintLayout>
 

@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+
 import android.widget.Button;
 import android.widget.Toast;
 import android.widget.Switch;
@@ -23,6 +24,9 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.UploadTask;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.DatabaseReference;
+
 
 public class UploadActivity extends AppCompatActivity {
 
@@ -33,30 +37,32 @@ public class UploadActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mAuth = FirebaseAuth.getInstance();
         setContentView(R.layout.activity_upload);
 
-        mAuth = FirebaseAuth.getInstance();
-        Button mChoose = (Button) findViewById(R.id.choose_button);
-        Button mUpload = (Button) findViewById(R.id.upload_button);
+        if (mAuth.getCurrentUser()!=null){
 
-        findViewById(R.id.imageView).setVisibility(View.INVISIBLE);
-        findViewById(R.id.private_switch).setVisibility(View.INVISIBLE);
-        findViewById(R.id.upload_button).setVisibility(View.INVISIBLE);
+            Button mChoose = (Button) findViewById(R.id.choose_button);
+            Button mUpload = (Button) findViewById(R.id.upload_button);
 
-        mChoose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                choosePhoto();
-            }
-        });
+            mChoose.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    choosePhoto();
+                }
+            });
 
-        mUpload.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                uploadPhoto();
-            }
-        });
-    }
+            mUpload.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    uploadPhoto();
+                }
+            });
+        }else {
+            goToPhotoViewer();
+        }
+
+        }
 
     public void choosePhoto() {
         Intent photoPickerIntent = new Intent(
@@ -71,7 +77,7 @@ public class UploadActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == 1) {
-            if (resultCode == Activity.RESULT_OK) {
+            if (resultCode == Activity.RESULT_OK && mAuth.getCurrentUser()!=null) {
                 try {
                     selectedImage = data.getData();
 
@@ -85,23 +91,10 @@ public class UploadActivity extends AppCompatActivity {
                     String picturePath = cursor.getString(columnIndex);
                     cursor.close();
 
-                    findViewById(R.id.upload_button).setVisibility(View.VISIBLE);
-                    findViewById(R.id.imageView).setVisibility(View.VISIBLE);
-
-                    //display private switch only to authenticated users
-                    if (mAuth.getCurrentUser() != null) {
-                        findViewById(R.id.private_switch).setVisibility(View.VISIBLE);
-                    }
-
                     ImageView mImageView = (ImageView) findViewById(R.id.imageView);
-                    Button mUpload = (Button) findViewById(R.id.upload_button);
 
                     //display image
                     mImageView.setImageURI(selectedImage);
-
-
-
-
 
                 } catch (Exception e) {
                     Toast.makeText(this, "Enable External Storage Permissions", Toast.LENGTH_LONG).show();
@@ -113,7 +106,7 @@ public class UploadActivity extends AppCompatActivity {
     public void uploadPhoto() {
 
         //check if selected image is not blank
-        if (selectedImage != null && !selectedImage.equals(Uri.EMPTY)) {
+        if (selectedImage != null && !selectedImage.equals(Uri.EMPTY) && mAuth.getCurrentUser()!=null) {
 
             //get description
             EditText photoDescription = (EditText) findViewById(R.id.editText);
@@ -174,6 +167,19 @@ public class UploadActivity extends AppCompatActivity {
                     }
                 });
 
+                //store it in database
+                DatabaseReference db_root = FirebaseDatabase.getInstance().getReference();
+
+                // do the transaction on the database
+                if (imagePath.split("/")[0].equals("public")) {
+                    DatabaseReference publicRef = db_root.child("public");
+                    publicRef.push().setValue(imagePath);
+                }
+                else {
+                    DatabaseReference privateRef = db_root.child("private/" + imagePath.split("/")[1]);
+                    privateRef.push().setValue(imagePath);
+                    Log.i(TAG, "Pushed file reference to " + "private/" + imagePath.split("/")[1]);
+                }
             }
 
         }else{

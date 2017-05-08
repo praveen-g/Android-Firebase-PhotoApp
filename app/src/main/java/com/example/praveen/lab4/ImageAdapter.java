@@ -1,11 +1,14 @@
 package com.example.praveen.lab4;
 
 import android.view.View;
+import android.net.Uri;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.content.Context;
 import android.view.ViewGroup;
+import com.bumptech.glide.Glide;
+
 
 /**
  * Created by praveen on 5/5/17.
@@ -13,10 +16,12 @@ import android.view.ViewGroup;
 
 public class ImageAdapter extends BaseAdapter {
     private Context mContext;
+    private String[] mThumbIds;
 
-    public ImageAdapter(Context c) {
+    public ImageAdapter(Context c,String[] photoUrls) {
 
         mContext = c;
+        mThumbIds = photoUrls;
     }
 
     public int getCount() {
@@ -38,21 +43,18 @@ public class ImageAdapter extends BaseAdapter {
         if (convertView == null) {
             // if it's not recycled, initialize some attributes
             imageView = new ImageView(mContext);
-            imageView.setLayoutParams(new GridView.LayoutParams(85, 85));
+            imageView.setLayoutParams(new GridView.LayoutParams(155, 155));
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imageView.setPadding(8, 8, 8, 8);
+            imageView.setPadding(4, 4, 4, 4);
         } else {
             imageView = (ImageView) convertView;
         }
 
-        imageView.setImageResource(mThumbIds[position]);
+        Glide
+                .with(mContext)
+                .load(mThumbIds[position])
+                .into(imageView);
+
         return imageView;
     }
-
-    // references to our images
-    private Integer[] mThumbIds = {
-//            R.drawable.sample_2, R.drawable.sample_3,
-//            R.drawable.sample_4, R.drawable.sample_5,
-
-    };
 }

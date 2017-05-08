@@ -30,8 +30,7 @@
             android:parentActivityName=".LoginActivity">
         </activity>
         <activity
-            android:name=".PhotoViewerActivity"
-            android:parentActivityName=".UploadActivity">
+            android:name=".PhotoViewerActivity">
         </activity>
     </application>
 
