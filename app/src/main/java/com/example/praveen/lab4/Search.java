@@ -32,7 +32,7 @@ public class Search {
         msearchPhrase = searchPhrase;
     }
 
-    public ArrayList<String> getMetadata(){
+    public void getMetadata(){
 
         FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
 
@@ -44,34 +44,23 @@ public class Search {
             // Get reference to the file
             final StorageReference imageRef = storageRef.child(ref);
 
-            imageRef.getMetadata().addOnCompleteListener(new OnCompleteListener<StorageMetadata>() {
+            imageRef.getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
                 @Override
-                public void onComplete(@NonNull Task<StorageMetadata> task) {
-                    StorageMetadata md = task.getResult();
-                    String desc = md.getCustomMetadata("Description");
-                    Log.d("DESC_MD", desc);
-                    if(desc.contains(msearchPhrase)){
+                public void onSuccess(StorageMetadata storageMetadata) {
+                    if (storageMetadata.getCustomMetadata("Description").contains(msearchPhrase)){
                         msearchResult.add(ref);
                     }
-
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Uh-oh, an error occurred!
                 }
             });
-//
-//            imageRef.getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
-//                @Override
-//                public void onSuccess(StorageMetadata storageMetadata) {
-//                    if (storageMetadata.getCustomMetadata("Description").contains(msearchPhrase)){
-//                        msearchResult.add(ref);
-//                    }
-//                }
-//            }).addOnFailureListener(new OnFailureListener() {
-//                @Override
-//                public void onFailure(@NonNull Exception exception) {
-//                    // Uh-oh, an error occurred!
-//                }
-//            });
         }
+    }
 
+    public ArrayList<String> getResult(){
         return msearchResult;
     }
 

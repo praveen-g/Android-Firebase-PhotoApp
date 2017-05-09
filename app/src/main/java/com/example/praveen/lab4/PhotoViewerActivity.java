@@ -24,6 +24,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 
 
@@ -37,6 +38,9 @@ public class PhotoViewerActivity extends AppCompatActivity {
 
     List<String> publicPhotoURLs = new ArrayList<String>();
     List<String> privatePhotoURLs = new ArrayList<String>();
+
+    List<String> publicMetadata = new ArrayList<String>();
+    List<String> privateMetadata = new ArrayList<String>();
 
     String[] publicImageContainer;
     String[] privateImageContainer;
@@ -65,22 +69,24 @@ public class PhotoViewerActivity extends AppCompatActivity {
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)){
                     Log.d("ENTER_KEY", "Processing");
                     String searchString = searchPhrase.getText().toString();
-//                    if(searchString!=""){
+                    if(searchString!=""){
 
                         Search searchPublic = new Search(publicPhotoLocations, searchString);
-                        publicPhotoLocations = searchPublic.getMetadata();
+                        searchPublic.getMetadata();
+                        publicPhotoLocations = searchPublic.getResult();
                         getPhotoURLs(publicPhotoLocations,publicPhotoURLs,true );
                         updatePublicPhotos();
 
                         if(mAuth.getCurrentUser()!=null){
                             Search searchPrivate = new Search(privatePhotoLocations,searchString);
-                            privatePhotoLocations = searchPrivate.getMetadata();
+                            searchPrivate.getMetadata();
+                            privatePhotoLocations = searchPrivate.getResult();
                             getPhotoURLs(privatePhotoLocations,privatePhotoURLs,true );
                             updatePrivatePhotos();
                         }
-//                    }else{
-//                       displayPhotos();
-//                    }
+                    }else{
+                       displayPhotos();
+                    }
                 }
                 return true;
             }
@@ -192,6 +198,7 @@ public class PhotoViewerActivity extends AppCompatActivity {
         StorageReference rootDBRef = firebaseStorage.getReference();
 
         for (String path: photoPaths) {
+
             rootDBRef.child(path).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                 @Override
                 public void onSuccess(Uri uri) {
