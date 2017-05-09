@@ -7,6 +7,8 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.content.Context;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
 import com.bumptech.glide.Glide;
 
 
@@ -39,6 +41,7 @@ public class ImageAdapter extends BaseAdapter {
     // create a new ImageView for each item referenced by the Adapter
     public View getView(int position, View convertView, ViewGroup parent) {
 
+        TextView desc;
         ImageView imageView;
         if (convertView == null) {
             // if it's not recycled, initialize some attributes

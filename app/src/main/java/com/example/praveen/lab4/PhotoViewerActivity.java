@@ -5,7 +5,9 @@ import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 import android.widget.GridView;
 
@@ -28,10 +30,10 @@ import com.google.firebase.storage.StorageReference;
 public class PhotoViewerActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
-    private static final String TAG = "BrowsePhotosActivity";
+    private static final String TAG = "PhotoViewerActivity";
 
-    final List<String> publicPhotoLocations = new ArrayList<String>();
-    final List<String> privatePhotoLocations = new ArrayList<String>();
+    List<String> publicPhotoLocations = new ArrayList<String>();
+    List<String> privatePhotoLocations = new ArrayList<String>();
 
     List<String> publicPhotoURLs = new ArrayList<String>();
     List<String> privatePhotoURLs = new ArrayList<String>();
@@ -52,6 +54,42 @@ public class PhotoViewerActivity extends AppCompatActivity {
         findViewById(R.id.privateTextView).setVisibility(View.INVISIBLE);
         findViewById(R.id.privateGridView).setVisibility(View.INVISIBLE);
 
+        final EditText searchPhrase = (EditText) findViewById(R.id.searchText);
+
+        displayPhotos();
+
+        searchPhrase.setOnKeyListener(new View.OnKeyListener(){
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)){
+                    Log.d("ENTER_KEY", "Processing");
+                    String searchString = searchPhrase.getText().toString();
+//                    if(searchString!=""){
+
+                        Search searchPublic = new Search(publicPhotoLocations, searchString);
+                        publicPhotoLocations = searchPublic.getMetadata();
+                        getPhotoURLs(publicPhotoLocations,publicPhotoURLs,true );
+                        updatePublicPhotos();
+
+                        if(mAuth.getCurrentUser()!=null){
+                            Search searchPrivate = new Search(privatePhotoLocations,searchString);
+                            privatePhotoLocations = searchPrivate.getMetadata();
+                            getPhotoURLs(privatePhotoLocations,privatePhotoURLs,true );
+                            updatePrivatePhotos();
+                        }
+//                    }else{
+//                       displayPhotos();
+//                    }
+                }
+                return true;
+            }
+
+        });
+
+    }
+
+    public void displayPhotos(){
         getPhotoLocations();
         getPhotoURLs(publicPhotoLocations, publicPhotoURLs, false);
         updatePublicPhotos();
@@ -59,7 +97,6 @@ public class PhotoViewerActivity extends AppCompatActivity {
             getPhotoURLs(privatePhotoLocations, privatePhotoURLs, false);
             updatePrivatePhotos();
         }
-
     }
 
     public void updatePublicPhotos() {
@@ -95,6 +132,7 @@ public class PhotoViewerActivity extends AppCompatActivity {
     public void getLocations(DataSnapshot dataSnapshot, boolean privateFlag){
         if(privateFlag){
             for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+
                 String location = (String) postSnapshot.getValue();
                 privatePhotoLocations.add(location);
             }
@@ -133,7 +171,7 @@ public class PhotoViewerActivity extends AppCompatActivity {
             });
         }
         // add public photos
-        DatabaseReference publicDBRef = db_root.child("public");
+        DatabaseReference publicDBRef = db_root.child("public/");
         publicDBRef.addValueEventListener(new ValueEventListener() {
 
             @Override

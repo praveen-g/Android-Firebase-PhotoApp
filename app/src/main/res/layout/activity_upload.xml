@@ -31,7 +31,7 @@
             android:layout_marginBottom="12dp"
             android:ems="10"
             android:inputType="textMultiLine"
-            android:text="Description"
+            android:hint="Description"
             tools:layout_editor_absoluteX="58dp"
             tools:layout_editor_absoluteY="266dp"
             android:layout_above="@+id/upload_button"
